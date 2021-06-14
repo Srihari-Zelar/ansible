@@ -1,0 +1,23 @@
+- name: Install Nginx
+  apt:
+    name: nginx
+    update_cache: yes
+    state: present
+
+- name: Download Frontend from Nexus
+  get_url:
+    url:
+    dest:
+    username: admin
+    password: admin123
+
+- name: Create HtDocs Directory
+  file:
+    path: /var/www/html
+    state: directory
+
+- name: Start Nginx
+  systemd:
+    state: restarted
+    name: nginx
+    enabled: yes

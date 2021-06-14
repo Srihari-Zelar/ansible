@@ -1,0 +1,11 @@
+[Unit]
+Description=users service
+
+[Service]
+User=app
+Environment=REDIS_HOST=REDIS_ENDPOINT
+ExecStart=/bin/java -jar /home/app/users/target/users-api-0.0.1.jar
+SyslogIdentifier=users
+
+[Install]
+WantedBy=multi-user.target
