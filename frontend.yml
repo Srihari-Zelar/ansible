@@ -1,0 +1,42 @@
+- name: Setup todo Project
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        update_cache: yes
+        state: present
+
+    - name: Start nginx
+      systemd:
+        state: started
+        name: nginx
+        enabled: yes
+
+    - name: Install npm
+      apt:
+        name: npm
+        update_cache: yes
+        state: present
+
+    - name: create a directory
+      file:
+        path: /var/www/html/app
+        state: directory
+
+    - name: Download Component
+      get_url:
+        url:
+        username:
+        password:
+
+    - name: Nginx installing
+      apt:
+        name: npm install --save-dev  --unsafe-perm node-sass
+        update_cache: yes
+        state: present
+
+    - name: Stat NPM
+        name: npm
+        state: started
