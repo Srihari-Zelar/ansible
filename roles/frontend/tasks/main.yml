@@ -6,18 +6,53 @@
 
 - name: Download Frontend from Nexus
   get_url:
-    url:
-    dest:
+    url: http://172.31.3.38:8081/repository/frontend/frontend-{{APP_VERSION}}.zip
+    dest: /tmp/frontend.zip
     username: admin
-    password: admin123
+    password: admin
+
+- name: Delete the default content
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/nginx/sites-enabled/default
+    - /etc/nginx/sites-available/default
+
 
 - name: Create HtDocs Directory
   file:
-    path: /var/www/html
+    path: /var/www/html/frontend
     state: directory
+
+- name: Unzip the Downloaded Content
+  unarchive:
+    src: /tmp/frontend.zip
+    dest: /var/www/html/frontend
+    remote_src: yes
+
+- name: Update Todo Config file
+  template:
+    src: todo.conf
+    dest: /etc/nginx/sites-enabled/todo.conf
 
 - name: Start Nginx
   systemd:
     state: restarted
     name: nginx
     enabled: yes
+
+- name: Install Node Exporter Prometheus Monitoring
+  include_role:
+    name: common
+    tasks_from: node_exporter
+
+- name: Install Filebeat Monitoring
+  include_role:
+    name: common
+    tasks_from: filebeat
+  vars:
+    IS_STRUCTURED: false
+    LOG_FILES:
+      - { file: "/var/log/nginx/access.log", type: "nginx_access" }
+      - { file: "/var/log/nginx/error.log", type: "nginx_error" }

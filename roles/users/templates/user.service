@@ -1,11 +1,9 @@
 [Unit]
-Description=users service
+Description=user service
 
 [Service]
-User=app
-Environment=REDIS_HOST=REDIS_ENDPOINT
-ExecStart=/bin/java -jar /home/app/users/target/users-api-0.0.1.jar
-SyslogIdentifier=users
-
+Environment=AUTH_API_PORT=8080
+ExecStart=/bin/java -jar /home/ubuntu/users/users.jar
+SyslogIdentifier=user
 [Install]
 WantedBy=multi-user.target
